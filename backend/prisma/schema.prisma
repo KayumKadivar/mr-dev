@@ -22,5 +22,5 @@ model Previlage {
   id Int    @id @default(autoincrement())
   name String @db.VarChar(50)
 
-  @@map("prevcode")
+  @@map("privilege_group")
 }

@@ -9,134 +9,48 @@
 ## 📋 Phase 1: Core Initialization & Server Setup
 
 ### 1. Initialize Node.js Project
-Create the foundational `package.json` file.
-```bash
-npm init -y
-```
+* Created the foundational `package.json` file using `npm init -y`.
 
 ### 2. Install Server Dependencies
-Install **Express** for routing and **Nodemon** for live-reloading during development.
-```bash
-npm install express
-npm install -g nodemon
-```
+* Installed **Express** for API routing using `npm install express`.
+* Installed **Nodemon** for automatic server restarts using `npm install -g nodemon`.
 
 ### 3. Setup Entry Files
-We configured a modular CommonJS architecture to resolve ES Module import errors.
-
-**File:** `server.js` (Server Entry Point)
-```javascript
-const app = require('./src/index');
-
-app.set("port", process.env.PORT || 3001);
-
-app.listen(app.get("port"), () => {
-    console.log(`🚀 Server running on port ${app.get("port")}`);
-});
-```
-
-**File:** `src/index.js` (Express Logic)
-```javascript
-const express = require("express");
-const app = express();
-
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
-
-module.exports = app;
-```
+* Created `server.js` as the main server entry point to run on port 3001.
+* Created `src/index.js` to manage the core Express logic and routes.
+* Configured a modular CommonJS architecture (using `require`) to resolve ES Module import errors.
 
 ---
 
-## 🗄️ Phase 2: Legacy Database Connection (Optional)
-*Initially used for raw SQL queries before migrating to Prisma.*
+## 🗄️ Phase 2: Legacy Database Connection
+*(This approach was initially used for raw SQL queries before migrating to Prisma).*
 
 ### 1. Install PostgreSQL Driver
-```bash
-npm install pg
-```
+* Installed the Node.js Postgres driver using `npm install pg`.
 
 ### 2. Configure Database Pool
-**File:** `src/db/db.js`
-```javascript
-const { Pool } = require("pg");
-
-const pool = new Pool({
-  user: "postgres",
-  host: "localhost",
-  database: "my-dev",
-  password: "1234",
-  port: 5432,
-});
-
-module.exports = pool;
-```
+* Created `src/db/db.js` and set up the connection pool.
+* Used hardcoded credentials (`localhost:5432/my-dev`) instead of using `.env` variables.
 
 ---
 
 ## 💎 Phase 3: Modern ORM Integration (Prisma v7)
 
 ### 1. Install Prisma Packages
-Install the Prisma CLI (dev dependency) and the Prisma Client.
-```bash
-npm install prisma --save-dev
-npm install @prisma/client
-```
+* Installed the Prisma CLI and Prisma Client using:
+  - `npm install prisma --save-dev`
+  - `npm install @prisma/client`
 
-### 2. Initialize Prisma
-Generate the required Prisma configuration files.
-```bash
-npx prisma init
-```
+### 2. Initialize Prisma Environment
+* Generated the required Prisma configuration folders and files using `npx prisma init`.
 
 ### 3. Configure Database URL (Prisma 7 Standard)
-> **Note:** Since we are strictly avoiding `.env` files, we configure the database connection directly in the new `prisma.config.ts` file introduced in Prisma v7.
-
-**File:** `prisma.config.ts`
-```typescript
-import { defineConfig } from "prisma/config";
-
-export default defineConfig({
-  schema: "prisma/schema.prisma",
-  migrations: {
-    path: "prisma/migrations",
-  },
-  datasource: {
-    // Hardcoded connection string replacing process.env["DATABASE_URL"]
-    url: "postgresql://postgres:1234@localhost:5432/my-dev", 
-  },
-});
-```
+> **Note:** We are strictly avoiding the use of `.env` files for security and preference.
+* Configured the database connection string directly inside the new `prisma.config.ts` file, which is the new standard for Prisma v7.
 
 ### 4. Define Database Schema
-Create the `AdminUser` table structure.
-
-**File:** `prisma/schema.prisma`
-```prisma
-generator client {
-  provider = "prisma-client-js"
-}
-
-datasource db {
-  provider = "postgresql"
-  // The 'url' property is removed here as it is now handled by prisma.config.ts
-}
-
-model AdminUser {
-  id        Int      @id @default(autoincrement())
-  username  String   @unique
-  password  String
-  createdAt DateTime @default(now())
-}
-```
+* Removed the deprecated `url` property from `prisma/schema.prisma`.
+* Created the `AdminUser` table structure in the schema (including `id`, `username`, `password`, and `createdAt` fields).
 
 ### 5. Push Schema to PostgreSQL
-Sync the Prisma schema with the actual PostgreSQL database to generate the tables.
-```bash
-npx prisma db push
-```
-
----
-
-*Document generated for GNFC-DEV workspace.*
+* Successfully synced the Prisma schema with the actual PostgreSQL database to generate the physical tables using `npx prisma db push`.
