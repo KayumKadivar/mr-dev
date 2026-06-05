@@ -15,7 +15,7 @@ const addPrevCode = async (req, res) => {
     }
 
     //insert the new recode into the database
-    const newPrevCode = await prisma.previlage.create({
+    const newPrevCode = await prisma.privilege.create({
       data: {
         name: name,
       },
@@ -40,7 +40,7 @@ const addPrevCode = async (req, res) => {
 const getAllPrevilage = async (req, res) => {
   try {
     // Retrieve all records from the prevcode table
-    const allPrevCode = await prisma.previlage.findMany({
+    const allPrevCode = await prisma.privilege.findMany({
       orderBy: { id: "asc" },
     });
 

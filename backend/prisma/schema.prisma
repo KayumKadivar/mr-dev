@@ -18,9 +18,35 @@ model AdminUser {
   createdAt DateTime @default(now())
 }
 
-model Previlage {
-  id Int    @id @default(autoincrement())
-  name String @db.VarChar(50)
+model User {
+  ecnumber  Int    @id
+  username  String @unique
+  password  String
+  usergrade Int
 
-  @@map("privilege_group")
+  privilege Privilege @relation(fields: [usergrade], references: [id])
+}
+
+model Privilege {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  users User[]
+}
+
+model PlantDetail {
+  plantCode String @id @db.VarChar(50)
+  plantName String @db.VarChar(50)
+}
+
+model ModuleDetail {
+  id     Int    @id @default(autoincrement())
+  module String @db.VarChar(50)
+}
+
+model UserDetail {
+  ecnumber Int
+  prevcode Int
+
+  @@id([ecnumber, prevcode])
 }
